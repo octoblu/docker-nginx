@@ -6,8 +6,14 @@ download_index() {
   local cdn="$1"
   local version="$2"
   local index_uri="$cdn/$version/index.html"
+  local exit_code
   echo "downloading $index_uri"
-  curl -sSl "$index_uri" -o /usr/share/nginx/html/index.html
+  curl --fail -sSl "$index_uri" -o /usr/share/nginx/html/index.html
+  exit_code=$?
+  if [ "$exit_code" != "0" ]; then
+    echo "Unable to download index.html, exiting."
+    exit 1
+  fi
 }
 
 start_nginx() {
